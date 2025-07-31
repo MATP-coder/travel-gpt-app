@@ -88,5 +88,6 @@ Ensure the environment variables defined in `.env.example` are added to your Ver
 2. Go to **vercel.com/import** and import your repository.
 3. Provide the required environment variables in Vercel’s dashboard.
 4. Click **Deploy**.
+5. 
 
 That's it! You now have a fully automated AI‑powered travel planner ready to serve your customers.
