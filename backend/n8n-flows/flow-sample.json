@@ -1,0 +1,53 @@
+{
+  "nodes": [
+    {
+      "id": "webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "reiseplaner/anfrage"
+      }
+    },
+    {
+      "id": "set",
+      "name": "Prepare Prompt",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [200, 0],
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "prompt",
+              "value": "={{\`Ziel(e): ${$json.body.destination}\nReisezeitraum: ${$json.body.startDate} bis ${$json.body.endDate}\nBudget: ${$json.body.budget}\nPersonen: ${$json.body.persons}\`}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "openai",
+      "name": "Generate Plan",
+      "type": "n8n-nodes-base.openai",
+      "typeVersion": 1,
+      "position": [400, 0],
+      "parameters": {
+        "resource": "chatCompletion",
+        "prompt": "={{$node[\"Prepare Prompt\"].json[\"prompt\"]}}",
+        "model": "gpt-4-turbo",
+        "temperature": 0.7
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Prepare Prompt", "type": "main", "index": 0 }]]
+    },
+    "Prepare Prompt": {
+      "main": [[{ "node": "Generate Plan", "type": "main", "index": 0 }]]
+    }
+  }
+}
